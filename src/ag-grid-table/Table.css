@@ -1,0 +1,40 @@
+.ag-root-wrapper {
+    border-left-width: 0;
+    border-right-width: 0;
+}
+.external-search {
+    border-top: solid 1px #ccc;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    .button-container {
+        box-sizing: border-box;
+        padding: 8px;
+        border-left: solid 1px #ccc;
+        height: 100%;
+        margin-right: -16px;
+        button {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border-color: blue;
+        }
+    }
+    input {
+        flex: 1;
+        border-width: 0;
+        height: 42px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+    }
+}
+
+.loading-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #fff;
+}
