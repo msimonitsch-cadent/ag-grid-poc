@@ -1,3 +1,7 @@
+:root {
+    --clr-pink: blue;
+    /* --ag-border-color: var(--clr-pink); */
+}
 .ag-root-wrapper {
     border-left-width: 0;
     border-right-width: 0;

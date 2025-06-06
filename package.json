@@ -11,11 +11,18 @@
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.40",
+    "@amcharts/amcharts5": "^5.12.1",
+    "@hookform/resolvers": "^5.0.1",
     "@tanstack/react-table": "^8.21.3",
-    "ag-grid-enterprise": "^33.2.3",
-    "ag-grid-react": "^33.2.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "ag-charts-enterprise": "^11.2.4",
+    "ag-grid-enterprise": "^33.2.4",
+    "ag-grid-react": "^33.2.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.57.0",
+    "react-sparklines": "^1.7.0",
+    "recharts": "^2.15.3",
+    "zod": "^3.25.49"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

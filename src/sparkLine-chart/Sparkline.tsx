@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useLayoutEffect, useEffect, useRef } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -13,6 +14,7 @@ const sparklineData = [
 ];
 
 export const SparklineChart = React.memo(({ data = sparklineData, id }) => {
+  const [loaded, setIsLoaded] = React.useState(false);
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -52,10 +54,18 @@ export const SparklineChart = React.memo(({ data = sparklineData, id }) => {
     // Store chart reference
     chartRef.current = chart;
 
+    setTimeout(() => {
+      // setIsLoaded(true);
+    }, 1);
+
     return () => {
       chart.dispose();
     };
   }, [data]);
 
-  return <div id={id} style={{ width: "100%", height: "100%" }}></div>;
+  if (!loaded) {
+    return "hello";
+  }
+
+  // return <div id={id} style={{ width: "100%", height: "100%" }}></div>;
 });

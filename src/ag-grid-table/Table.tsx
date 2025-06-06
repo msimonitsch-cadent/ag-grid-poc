@@ -1,11 +1,41 @@
+// @ts-nocheck
 import ReactDOMServer from "react-dom/server";
 import { AgGridReact } from "ag-grid-react";
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
 import data from "./grid-data.js";
 
 import "./Table.css";
 
-import { themeQuartz, iconOverrides } from "ag-grid-community";
+import {
+  AgChartsCommunityModule,
+  AgSparklineOptions,
+} from "ag-charts-community";
+
+import {
+  themeQuartz,
+  iconOverrides,
+  ClientSideRowModelModule,
+  ValidationModule,
+  ModuleRegistry,
+} from "ag-grid-community";
+import {
+  ClipboardModule,
+  ContextMenuModule,
+  SparklinesModule,
+} from "ag-grid-enterprise";
+
+ModuleRegistry.registerModules([
+  // ClientSideRowModelModule,
+  SparklinesModule.with(AgChartsCommunityModule),
+  // ClipboardModule,
+  // ContextMenuModule,
+  // ValidationModule /* Development Only */,
+]);
+
+const amendedData = data.map((d) => ({
+  ...d,
+  sparkline: [1, 2, -6, -7, -2, -7, 3, 4, -3, -8],
+}));
 
 // to use myTheme in an application, pass it to the theme grid option
 const myTheme = themeQuartz
@@ -27,7 +57,7 @@ const myTheme = themeQuartz
     })
   )
   .withParams({
-    borderColor: "#CCCCCC",
+    borderColor: "var(--clr-pink)",
     borderRadius: 4,
     browserColorScheme: "light",
     fontFamily: {
@@ -43,6 +73,8 @@ const myTheme = themeQuartz
 
 import type { CustomCellRendererProps } from "ag-grid-react";
 import { SparklineChart } from "../sparkLine-chart/Sparkline.js";
+import AM5Chart from "../sparkLine-chart/SparklineAM5";
+import Rechart, { ReactSparkline } from "../sparkLine-chart/RechartsSparkline";
 
 const NavigableCellRenderer = (params: CustomCellRendererProps) => {
   console.log({ params });
@@ -50,22 +82,38 @@ const NavigableCellRenderer = (params: CustomCellRendererProps) => {
 };
 
 export default function Table({ isRowNavigation = true }) {
-  const [rowData /*, setRowData */] = useState(data);
+  const [rowData /*, setRowData */] = useState(amendedData);
   const [quickFilter, setQuickFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [colDefs] = useState([
-    { field: "mission", filter: true, pinned: "left", lockPosition: true },
-    { field: "company" },
-    { field: "location" },
-    { field: "date" },
-    { field: "price" },
+    {
+      field: "mission",
+      filter: true,
+      pinned: "left",
+      lockPosition: true,
+      // aggFunc: "count",
+      // rowGroup: true,
+    },
+    { field: "company", aggFunc: "comp" },
+    { field: "location", aggfunc: "first" },
+    { field: "date", aggFunc: "last" },
+    { field: "price", aggFunc: "sum" },
     { field: "successful" },
     {
-      field: "Sparkline",
-      cellRenderer: (params) => {
-        // console.log({ params });
-        return <SparklineChart id={`id-${params.node.id}`} />;
-      },
+      field: "sparkline",
+      // cellRenderer: ReactSparkline,
+      cellRenderer: Rechart,
+      // cellRenderer: AM5Chart,
+      // cellRenderer: (params) => {
+      //   console.log({ params });
+      //   return <AM5Chart />;
+      // },
+      // cellRenderer: "agSparklineCellRenderer",
+      // cellRendererParams: {
+      //   sparklineOptions: {
+      //     type: "area",
+      //   } as AgSparklineOptions,
+      // },
     },
     { field: "rocket", pinned: "right", lockPosition: true },
   ]);
@@ -90,6 +138,20 @@ export default function Table({ isRowNavigation = true }) {
   const Loader = () => {
     return <div className="loading-container">Loading...</div>;
   };
+
+  const aggFunc = useMemo(() => {
+    return {
+      price: (param) => {
+        const value = param.values[0];
+        return value;
+      },
+      comp: (param) => {
+        console.log({ param });
+        const uniqueCount = new Set(param.values)?.size;
+        return `Total Comps: ${uniqueCount}`;
+      },
+    };
+  }, []);
 
   return (
     <>
@@ -118,8 +180,13 @@ export default function Table({ isRowNavigation = true }) {
             columnDefs={colDefs}
             quickFilterText={quickFilter}
             theme={myTheme}
-            // overlayLoadingTemplate={ReactDOMServer.renderToString(<Loader />)}
+            loadingOverlayComponent={Loader}
             loading={loading}
+            // suppressAnimationFrame={true}
+            // rowBuffer={20}
+            // gridOptions={{ headerHeight: 0 }}
+            grandTotalRow="bottom"
+            aggFuncs={aggFunc}
           />
         </div>
       </div>
