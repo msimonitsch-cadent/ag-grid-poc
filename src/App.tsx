@@ -1,20 +1,17 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import { ModuleRegistry } from "ag-grid-community";
 import {
   AllEnterpriseModule,
   LicenseManager,
   IntegratedChartsModule,
 } from "ag-grid-enterprise";
-import Table from "./ag-grid-table/Table";
 import { AgChartsEnterpriseModule } from "ag-charts-enterprise";
-
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
+import Navigation from "./components/Navigation";
+import AGGridTablePage from "./pages/AGGridTablePage";
+import TanStackTablePage from "./pages/TanStackTablePage";
+import TreeTablePage from "./pages/TreeTablePage";
 import "./App.css";
-import SparklineChart from "./sparkLine-chart/SparklineAM5";
-import { MyForm } from "./RHFwithZod";
-// import { SparklineChart } from "./sparkLine-chart/Sparkline";
 
 // Register all Community and Enterprise features
 ModuleRegistry.registerModules([
@@ -27,13 +24,6 @@ LicenseManager.setLicenseKey(
 );
 
 function App() {
-  // useEffect(() => {
-  //   fetch("https://dev-assets.cadent.tv/variables/platformMetadata.json")
-  //     .then((response) => response.json())
-  //     .then((data) => console.log(data))
-  //     .catch((error) => console.error(error));
-  // }, []);
-
   return (
     <>
       <section>
@@ -47,11 +37,14 @@ function App() {
               />
             </a>
           </div>
-          <div>{/* <SparklineChart /> */}</div>
         </header>
+        <Navigation />
         <main>
-          {/* <MyForm /> */}
-          <Table />
+          <Routes>
+            <Route path="/" element={<AGGridTablePage />} />
+            <Route path="/tanstack-table" element={<TanStackTablePage />} />
+            <Route path="/tree" element={<TreeTablePage />} />
+          </Routes>
         </main>
       </section>
     </>
