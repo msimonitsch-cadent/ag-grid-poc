@@ -25,10 +25,10 @@ import {
 } from "ag-grid-enterprise";
 
 ModuleRegistry.registerModules([
-  // ClientSideRowModelModule,
+  ClientSideRowModelModule,
   SparklinesModule.with(AgChartsCommunityModule),
-  // ClipboardModule,
-  // ContextMenuModule,
+  ClipboardModule,
+  ContextMenuModule,
   // ValidationModule /* Development Only */,
 ]);
 
@@ -153,6 +153,12 @@ export default function Table({ isRowNavigation = true }) {
     };
   }, []);
 
+  const rowSelection = useMemo<
+    RowSelectionOptions | "single" | "multiple"
+  >(() => {
+    return { mode: "multiRow", checkboxLocation: "autoGroupColumn" };
+  }, []);
+
   return (
     <>
       <div className="card">
@@ -176,6 +182,7 @@ export default function Table({ isRowNavigation = true }) {
         >
           <AgGridReact
             rowData={rowData}
+            rowSelection={rowSelection}
             // columnDefs={isRowNavigation ? cols : colDefs}
             columnDefs={colDefs}
             quickFilterText={quickFilter}
